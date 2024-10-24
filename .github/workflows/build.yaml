@@ -1,5 +1,3 @@
-# TODO: This one and sentry_jsonish are almost the same.
-# A reusable flow would help.
 name: build sentry_forked_jsonnet
 
 on:
