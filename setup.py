@@ -33,6 +33,8 @@ LIB_SOURCES = [
     "core/vm.cpp",
     "third_party/md5/md5.cpp",
     "third_party/rapidyaml/rapidyaml.cpp",
+]
+LIB_C_SOURCE = [
     "python/_jsonnet.c",
 ]
 
@@ -67,11 +69,13 @@ class BuildJsonnetExt(BuildExt):
         # Feature request: https://github.com/pypa/setuptools/issues/1819
 
         print("Setting compile flags for compiler type " + self.compiler.compiler_type)
+        print(ext.language)
         # This is quite hacky as we're modifying the Extension object itself.
-        if self.compiler.compiler_type == "msvc":
-            ext.extra_compile_args.append("/std:c++17")
-        else:
-            ext.extra_compile_args.append("-std=c++17")
+        if ext.language == 'c++':
+            if self.compiler.compiler_type == "msvc":
+                ext.extra_compile_args.append("/std:c++17")
+            else:
+                ext.extra_compile_args.append("-std=c++17")
 
         # Actually build.
         super().build_extension(ext)
@@ -96,8 +100,9 @@ setuptools.setup(
         "build_ext": BuildJsonnetExt,
     },
     ext_modules=[
+        # C++ Extension
         setuptools.Extension(
-            "_jsonnet",
+            "_jsonnet_cpp",
             sources=LIB_SOURCES,
             include_dirs=[
                 "include",
@@ -106,7 +111,16 @@ setuptools.setup(
                 "third_party/rapidyaml",
             ],
             language="c++",
-        )
+        ),
+        # C Extension
+        setuptools.Extension(
+            "_jsonnet_c",
+            sources=LIB_C_SOURCE,
+            include_dirs=[
+                "include",
+            ],
+            language="c",
+        ),
     ],
     test_suite="python._jsonnet_test",
 )
