@@ -76,7 +76,7 @@ jsonnet_ext = Extension(
     language='c++'
 )
 
-setup(name='jsonnet',
+setup(name='sentry-forked-jsonnet',
       url='https://jsonnet.org',
       project_urls={
         'Source': 'https://github.com/google/jsonnet',
