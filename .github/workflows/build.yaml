@@ -9,19 +9,24 @@ on:
 jobs:
   dist:
     name: Create wheel and source distribution for sentry_forked_jsonnet
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11, 3.12, 3.13] 
+        os: [ubuntu-latest, macos-latest] 
+        arch: [x86_64, arm64] 
     timeout-minutes: 10
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
-      - name: "Prepare artifacts"
-        run: |
-          pip install wheel
-          pip install build
-          python -m build --wheel
-      - uses: actions/upload-artifact@v3.1.1
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.16.5
+        env:
+            CIBW_TEST_COMMAND: >
+                python {package}/python/_jsonnet_test.py
+      - uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.sha }}
-          path: dist/*
+          name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          path: ./wheelhouse/*.whl
