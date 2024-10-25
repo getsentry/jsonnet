@@ -2,8 +2,6 @@ name: build sentry_forked_jsonnet
 
 on:
   push:
-    branches:
-      - release/**
 
 jobs:
   dist:
