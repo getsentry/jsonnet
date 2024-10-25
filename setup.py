@@ -48,18 +48,6 @@ LIB_OBJECTS = [
 
 MODULE_SOURCES = ['python/_jsonnet.c']
 
-def get_version():
-    """
-    Parses the version out of libjsonnet.h
-    """
-    with open(os.path.join(DIR, 'include/libjsonnet.h')) as f:
-        for line in f:
-            if '#define' in line and 'LIB_JSONNET_VERSION' in line:
-                v_code = line.partition('LIB_JSONNET_VERSION')[2].strip('\n "')
-                if v_code[0] == "v":
-                    v_code = v_code[1:]
-                return v_code
-
 class BuildJsonnetExt(BuildExt):
     def run(self):
         p = Popen(['make'] + LIB_OBJECTS, cwd=DIR)
@@ -85,7 +73,7 @@ setup(name='sentry-forked-jsonnet',
       license="Apache License 2.0",
       author='David Cunningham',
       author_email='dcunnin@google.com',
-      version=get_version(),
+      version="0.20.0",
       cmdclass={
           'build_ext': BuildJsonnetExt,
       },

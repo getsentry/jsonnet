@@ -13,4 +13,4 @@ function replace() {
     grep "$2" $3  # verify that replacement was successful
 }
 
-replace "#define LIB_JSONNET_VERSION \"[0-9.]+\""  "#define LIB_JSONNET_VERSION \"$NEW_VERSION\"" include/libjsonnet.h
+replace "version=\"[0-9.]+\""  "version=\"$NEW_VERSION\"" setup.py
