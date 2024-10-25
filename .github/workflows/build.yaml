@@ -1,0 +1,34 @@
+name: build sentry_forked_jsonnet
+
+on:
+  push:
+    branches:
+      - master
+      - release/**
+
+jobs:
+  dist:
+    name: Create wheel and source distribution for sentry_forked_jsonnet
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest] 
+        arch: [x86_64, arm64] 
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.21.3
+        env:
+            # Skip PyPy, 32-bit Windows, 32-bit Linux, and CPython before 3.10.
+            # See https://cibuildwheel.readthedocs.io/en/stable/options/#examples_1
+            CIBW_SKIP: "*-win32 pp* *-manylinux_i686 *-musllinux_i686 cp36-* cp37-* cp38-* cp39-*"
+            CIBW_TEST_COMMAND: >
+                python {package}/python/_jsonnet_test.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cibw-wheels-${{ matrix.os }}-${{ matrix.arch }}
+          path: ./wheelhouse/*.whl
