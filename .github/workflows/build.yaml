@@ -19,17 +19,23 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: matrix.arch == 'aarch64'
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
       - uses: actions/setup-python@v5
         with:
           python-version: 3.13
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.21.3
         env:
-            # Skip PyPy, 32-bit Windows, 32-bit Linux, and CPython before 3.10.
-            # See https://cibuildwheel.readthedocs.io/en/stable/options/#examples_1
-            CIBW_SKIP: "*-win32 pp* *-manylinux_i686 *-musllinux_i686 cp36-* cp37-* cp38-* cp39-*"
-            CIBW_TEST_COMMAND: >
-                python {package}/python/_jsonnet_test.py
+          # Skip PyPy, 32-bit Windows, 32-bit Linux, and CPython before 3.10.
+          # See https://cibuildwheel.readthedocs.io/en/stable/options/#examples_1
+          CIBW_ARCHS: ${{ matrix.arch }}
+          CIBW_SKIP: "*-win32 pp* *-manylinux_i686 *-musllinux_i686 cp36-* cp37-* cp38-* cp39-*"
+          CIBW_TEST_COMMAND: >
+              python {package}/python/_jsonnet_test.py
       - uses: actions/upload-artifact@v4
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ matrix.arch }}
