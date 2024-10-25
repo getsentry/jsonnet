@@ -2,6 +2,8 @@ name: build sentry_forked_jsonnet
 
 on:
   push:
+    branches:
+      - release/**
 
 jobs:
   dist:
@@ -14,7 +16,7 @@ jobs:
         - {os: ubuntu-latest, arch: x86_64}
         - {os: macos-13, arch: x86_64}
         - {os: macos-14, arch: arm64}
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
       - name: Set up QEMU
