@@ -2,7 +2,9 @@ name: build sentry_forked_jsonnet
 
 on:
   push:
-  workflow_dispatch:
+    branches:
+      - master
+      - release/**
 
 jobs:
   dist:
