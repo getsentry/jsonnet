@@ -73,7 +73,7 @@ setup(name='sentry-forked-jsonnet',
       license="Apache License 2.0",
       author='David Cunningham',
       author_email='dcunnin@google.com',
-      version="0.20.0-2",
+      version="0.20.0-3",
       cmdclass={
           'build_ext': BuildJsonnetExt,
       },
