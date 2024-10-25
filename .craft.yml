@@ -5,6 +5,7 @@ github:
   repo: sentry-forked-jsonnet
 changelogPolicy: auto
 releaseBranchPrefix: release
+preReleaseCommand: bash scripts/bump-version.sh
 targets:
   - name: pypi
   - name: sentry-pypi
