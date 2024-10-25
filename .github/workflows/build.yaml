@@ -31,3 +31,22 @@ jobs:
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ matrix.arch }}
           path: ./wheelhouse/*.whl
+  upload_all:
+    name: Upload combined artifact for all wheels
+    runs-on: ubuntu-latest
+    needs: dist  # Ensure this runs after all dist jobs
+    steps:
+      - uses: actions/checkout@v4
+
+      # Download all the artifacts from previous jobs
+      - name: Download all wheels
+        uses: actions/download-artifact@v4
+        with:
+          path: ./combined-wheels
+
+      # Upload all downloaded wheels as a single artifact 
+      - name: Upload all wheels as single artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.sha  }}
+          path: ./combined-wheels/**
